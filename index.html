@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HVAC Instant Quote Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* General Styling */
         body {
@@ -19,9 +21,9 @@
 
         .quote-tool {
             text-align: center;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
-            padding: 20px 20px 40px; /* Spacing at the bottom for back button */
+            padding: 20px 20px 40px;
             background: #ffffff;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
@@ -46,12 +48,14 @@
         }
 
         /* Question and Result Panels */
-        .question, .result {
+        .question,
+        .result {
             display: none;
             animation: fadeIn 0.5s ease-in-out;
         }
 
-        .question.active, .result.active {
+        .question.active,
+        .result.active {
             display: block;
         }
 
@@ -70,12 +74,17 @@
         /* Card Style Options */
         .options {
             display: flex;
+            flex-direction: row;
+            /* Align items in a row */
             flex-wrap: wrap;
             justify-content: center;
+            gap: 10px;
         }
 
         .card {
-            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
             font-size: 1em;
             cursor: pointer;
@@ -84,9 +93,19 @@
             border-radius: 8px;
             background-color: #ffffff;
             color: #333;
-            width: 45%;
+            width: 20%;
+            /* Adjust width to fit multiple cards horizontally */
+            min-width: 100px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            flex: 1 1 auto;
+        }
+
+        .card i {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #ee5566;
+            transition: color 0.3s ease;
         }
 
         .card:hover {
@@ -95,8 +114,13 @@
             transform: scale(1.05);
         }
 
+        .card:hover i {
+            color: #ffffff;
+            /* Icon changes to white on hover */
+        }
+
         /* Back Button */
-        .back-button {
+        .back-button, .start-over {
             position: absolute;
             top: 20px;
             left: 20px;
@@ -110,7 +134,7 @@
             color: #333;
         }
 
-        .back-button:hover {
+        .back-button:hover, .start-over:hover {
             background: #ccc;
         }
 
@@ -124,8 +148,15 @@
 
         /* Animation Keyframes */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive Design */
@@ -133,181 +164,253 @@
             h1 {
                 font-size: 1.5em;
             }
+
             h2 {
                 font-size: 1.2em;
             }
+
+            .options {
+                flex-direction: column;
+                /* Stack options vertically on smaller screens */
+            }
+
             .card {
                 width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
 
-<div class="quote-tool">
-    <h1>HVAC Instant Quote Tool</h1>
-    
-    <!-- Progress Bar -->
-    <div class="progress-bar">
-        <div class="progress" id="progress"></div>
-    </div>
+    <div class="quote-tool">
+        <h1>HVAC Instant Quote Tool</h1>
 
-    <!-- Back Button -->
-    <button class="back-button" id="backButton" onclick="goBack()" style="display: none;">Back</button>
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
 
-    <!-- Question 1: Location of Unit -->
-    <div class="question active" id="question1">
-        <h2>Where is Your Unit Located?</h2>
-        <div class="options">
-            <div class="card" onclick="selectOption(1, 'Attic')">Attic</div>
-            <div class="card" onclick="selectOption(1, 'Garage')">Garage</div>
-            <div class="card" onclick="selectOption(1, 'Crawl Space')">Crawl Space</div>
-            <div class="card" onclick="selectOption(1, 'Closet')">Closet</div>
-            <div class="card" onclick="selectOption(1, 'Other')">Other</div>
+        <!-- Back Button -->
+        <button class="back-button" id="backButton" onclick="goBack()" style="display: none;">Back</button>
+
+        <!-- Question 1: Location of Unit -->
+        <div class="question active" id="question1">
+            <h2>Where is Your Unit Located?</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(1, 'Attic')">
+                    <i class="fas fa-house-damage"></i> Attic
+                </div>
+                <div class="card" onclick="selectOption(1, 'Garage')">
+                    <i class="fas fa-warehouse"></i> Garage
+                </div>
+                <div class="card" onclick="selectOption(1, 'Crawl Space')">
+                    <i class="fas fa-tools"></i> Crawl Space
+                </div>
+                <div class="card" onclick="selectOption(1, 'Closet')">
+                    <i class="fas fa-door-closed"></i> Closet
+                </div>
+                <div class="card" onclick="selectOption(1, 'Other')">
+                    <i class="fas fa-ellipsis-h"></i> Other
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2: Type of Service -->
+        <div class="question" id="question2">
+            <h2>Type of Service</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(2, 'Maintenance')">
+                    <i class="fas fa-wrench"></i> Maintenance
+                </div>
+                <div class="card" onclick="selectOption(2, 'Installation')">
+                    <i class="fas fa-hammer"></i> Installation
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 for Maintenance: Type of System -->
+        <div class="question" id="maintenanceType">
+            <h2>Type of System for Maintenance</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(169, 169)">
+                    <i class="fas fa-fire"></i> Furnace
+                </div>
+                <div class="card" onclick="calculateFinalCost(349, 349)">
+                    <i class="fas fa-wind"></i> Furnace + AC
+                </div>
+                <div class="card" onclick="calculateFinalCost(199, 199)">
+                    <i class="fas fa-snowflake"></i> AC
+                </div>
+                <div class="card" onclick="calculateFinalCost(249, 249)">
+                    <i class="fas fa-temperature-high"></i> Heat Pump
+                </div>
+                <div class="card" onclick="selectOption(3, 'Ductless')">
+                    <i class="fas fa-wind"></i> Ductless
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub-question for Ductless System Maintenance -->
+        <div class="question" id="ductlessMaintenance">
+            <h2>Number of Heads for Ductless</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(272, 272)">
+                    <i class="fas fa-one"></i> 1 Head
+                </div>
+                <div class="card" onclick="calculateFinalCost(282, 282)">
+                    <i class="fas fa-two"></i> 2 Heads
+                </div>
+                <div class="card" onclick="calculateFinalCost(322, 322)">
+                    <i class="fas fa-three"></i> 3 Heads
+                </div>
+                <div class="card" onclick="calculateFinalCost(362, 362)">
+                    <i class="fas fa-four"></i> 4 Heads
+                </div>
+                <div class="card" onclick="calculateFinalCost(412, 412)">
+                    <i class="fas fa-five"></i> 5 Heads
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 for Installation: Fuel to Install -->
+        <div class="question" id="installationFuel">
+            <h2>Fuel Type to Install</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(5, 'Gas')">
+                    <i class="fas fa-gas-pump"></i> Gas
+                </div>
+                <div class="card" onclick="selectOption(5, 'Electric')">
+                    <i class="fas fa-bolt"></i> Electric
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub-questions for Gas Installation -->
+        <div class="question" id="gasSystem">
+            <h2>Choose System</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(6, 'Furnace')">
+                    <i class="fas fa-fire"></i> Furnace
+                </div>
+                <div class="card" onclick="selectOption(6, 'Furnace + AC')">
+                    <i class="fas fa-wind"></i> Furnace + AC
+                </div>
+            </div>
+        </div>
+
+        <div class="question" id="furnaceEfficiency">
+            <h2>Choose Furnace Efficiency</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(6500, 10000)">
+                    <i class="fas fa-percent"></i> 80%
+                </div>
+                <div class="card" onclick="calculateFinalCost(8000, 12000)">
+                    <i class="fas fa-percent"></i> 90%
+                </div>
+            </div>
+        </div>
+
+        <div class="question" id="furnaceAcEfficiency">
+            <h2>Choose Furnace + AC Efficiency</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(15000, 24000)">
+                    <i class="fas fa-percent"></i> 80%, 14 SEER
+                </div>
+                <div class="card" onclick="calculateFinalCost(25000, 34000)">
+                    <i class="fas fa-percent"></i> 90%, 18 SEER
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub-questions for Electric Installation -->
+        <div class="question" id="electricSystem">
+            <h2>Choose Electric System</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(14000, 26000)">
+                    <i class="fas fa-stream"></i> Ducted
+                </div>
+                <div class="card" onclick="calculateFinalCost(9000, 15000)">
+                    <i class="fas fa-wind"></i> Ductless
+                </div>
+            </div>
+        </div>
+
+        <!-- Estimated Cost Display -->
+        <div class="result" id="result">
+            <h2>Estimated Cost:</h2>
+            <p><strong><span id="estimated-cost">$0</span></strong></p>
+            <button class="start-over" onclick="startOver()">Start Over</button>
         </div>
     </div>
 
-    <!-- Question 2: Type of Service -->
-    <div class="question" id="question2">
-        <h2>Type of Service</h2>
-        <div class="options">
-            <div class="card" onclick="selectOption(2, 'Maintenance')">Maintenance</div>
-            <div class="card" onclick="selectOption(2, 'Installation')">Installation</div>
-        </div>
-    </div>
+    <script>
+        // Track Progress
+        const progressElement = document.getElementById('progress');
+        const backButton = document.getElementById('backButton');
+        const totalSteps = 7;  // Update this if there are more steps
+        let currentStep = 1;
+        let stepHistory = [];
 
-    <!-- Question 3 for Maintenance: Type of System -->
-    <div class="question" id="maintenanceType">
-        <h2>Type of System for Maintenance</h2>
-        <div class="options">
-            <div class="card" onclick="calculateFinalCost(169, 169)">Furnace </div>
-            <div class="card" onclick="calculateFinalCost(349, 349)">Furnace + AC </div>
-            <div class="card" onclick="calculateFinalCost(199, 199)">AC</div>
-            <div class="card" onclick="calculateFinalCost(249, 249)">Heat Pump</div>
-            <div class="card" onclick="selectOption(3, 'Ductless')">Ductless</div>
-        </div>
-    </div>
-
-    <!-- Sub-question for Ductless System Maintenance -->
-    <div class="question" id="ductlessMaintenance">
-        <h2>Number of Heads for Ductless</h2>
-        <div class="options">
-            <div class="card" onclick="calculateFinalCost(272, 272)">1 Head</div>
-            <div class="card" onclick="calculateFinalCost(282, 282)">2 Heads</div>
-            <div class="card" onclick="calculateFinalCost(322, 322)">3 Heads</div>
-            <div class="card" onclick="calculateFinalCost(362, 362)">4 Heads</div>
-            <div class="card" onclick="calculateFinalCost(412, 412)">5 Heads</div>
-        </div>
-    </div>
-
-    <!-- Question 3 for Installation: Fuel to Install -->
-    <div class="question" id="installationFuel">
-        <h2>Fuel Type to Install</h2>
-        <div class="options">
-            <div class="card" onclick="selectOption(5, 'Gas')">Gas</div>
-            <div class="card" onclick="selectOption(5, 'Electric')">Electric</div>
-        </div>
-    </div>
-
-    <!-- Sub-questions for Gas Installation -->
-    <div class="question" id="gasSystem">
-        <h2>Choose System</h2>
-        <div class="options">
-            <div class="card" onclick="selectOption(6, 'Furnace')">Furnace</div>
-            <div class="card" onclick="selectOption(6, 'Furnace + AC')">Furnace + AC</div>
-        </div>
-    </div>
-
-    <div class="question" id="furnaceEfficiency">
-        <h2>Choose Furnace Efficiency</h2>
-        <div class="options">
-            <div class="card" onclick="calculateFinalCost(6500, 10000)">80%</div>
-            <div class="card" onclick="calculateFinalCost(8000, 12000)">90%</div>
-        </div>
-    </div>
-
-    <div class="question" id="furnaceAcEfficiency">
-        <h2>Choose Furnace + AC Efficiency</h2>
-        <div class="options">
-            <div class="card" onclick="calculateFinalCost(15000, 24000)">80%, 14 SEER </div>
-            <div class="card" onclick="calculateFinalCost(25000, 34000)">90%, 18 SEER </div>
-        </div>
-    </div>
-
-    <!-- Sub-questions for Electric Installation -->
-    <div class="question" id="electricSystem">
-        <h2>Choose Electric System</h2>
-        <div class="options">
-            <div class="card" onclick="calculateFinalCost(14000, 26000)">Ducted</div>
-            <div class="card" onclick="calculateFinalCost(9000, 15000)">Ductless</div>
-        </div>
-    </div>
-
-    <!-- Estimated Cost Display -->
-    <div class="result" id="result">
-        <h2>Estimated Cost:</h2>
-        <p><strong><span id="estimated-cost">$0</span></strong></p>
-    </div>
-</div>
-
-<script>
-    // Track Progress
-    const progressElement = document.getElementById('progress');
-    const backButton = document.getElementById('backButton');
-    const totalSteps = 7;  // Update this if there are more steps
-    let currentStep = 1;
-    let stepHistory = [];
-
-    function updateProgress() {
-        const progressPercentage = (currentStep / totalSteps) * 100;
-        progressElement.style.width = `${progressPercentage}%`;
-    }
-
-    function selectOption(step, option) {
-        stepHistory.push(step);
-        
-        const currentQuestion = document.querySelector('.question.active');
-        if (currentQuestion) currentQuestion.classList.remove('active');
-        
-        backButton.style.display = step > 1 ? 'inline-block' : 'none';
-        currentStep++;
-        updateProgress();
-
-        if (step === 1) {
-            document.getElementById('question2').classList.add('active');
-        } else if (step === 2) {
-            document.getElementById(option === 'Maintenance' ? 'maintenanceType' : 'installationFuel').classList.add('active');
-        } else if (step === 3 && option === 'Ductless') {
-            document.getElementById('ductlessMaintenance').classList.add('active');
-        } else if (step === 5) {
-            document.getElementById(option === 'Gas' ? 'gasSystem' : 'electricSystem').classList.add('active');
-        } else if (step === 6) {
-            document.getElementById(option === 'Furnace' ? 'furnaceEfficiency' : 'furnaceAcEfficiency').classList.add('active');
+        function updateProgress() {
+            const progressPercentage = (currentStep / totalSteps) * 100;
+            progressElement.style.width = `${progressPercentage}%`;
         }
-    }
 
-    function goBack() {
-        currentStep--;
-        updateProgress();
+        function selectOption(step, option) {
+            stepHistory.push(step);
 
-        const currentQuestion = document.querySelector('.question.active');
-        if (currentQuestion) currentQuestion.classList.remove('active');
-        
-        const previousStep = stepHistory.pop();
-        document.getElementById(`question${previousStep}`).classList.add('active');
+            const currentQuestion = document.querySelector('.question.active');
+            if (currentQuestion) currentQuestion.classList.remove('active');
 
-        backButton.style.display = stepHistory.length > 0 ? 'inline-block' : 'none';
-    }
+            backButton.style.display = step > 1 ? 'inline-block' : 'none';
+            currentStep++;
+            updateProgress();
 
-    function calculateFinalCost(min, max) {
-        const activeQuestion = document.querySelector('.question.active');
-        if (activeQuestion) activeQuestion.classList.remove('active');
-        
-        document.getElementById('result').classList.add('active');
-        document.getElementById('estimated-cost').textContent = `$${min} - $${max}`;
-        backButton.style.display = 'none';
-    }
-</script>
+            if (step === 1) {
+                document.getElementById('question2').classList.add('active');
+            } else if (step === 2) {
+                document.getElementById(option === 'Maintenance' ? 'maintenanceType' : 'installationFuel').classList.add('active');
+            } else if (step === 3 && option === 'Ductless') {
+                document.getElementById('ductlessMaintenance').classList.add('active');
+            } else if (step === 5) {
+                document.getElementById(option === 'Gas' ? 'gasSystem' : 'electricSystem').classList.add('active');
+            } else if (step === 6) {
+                document.getElementById(option === 'Furnace' ? 'furnaceEfficiency' : 'furnaceAcEfficiency').classList.add('active');
+            }
+        }
+
+        function goBack() {
+            currentStep--;
+            updateProgress();
+
+            const currentQuestion = document.querySelector('.question.active');
+            if (currentQuestion) currentQuestion.classList.remove('active');
+
+            const previousStep = stepHistory.pop();
+            document.getElementById(`question${previousStep}`).classList.add('active');
+
+            backButton.style.display = stepHistory.length > 0 ? 'inline-block' : 'none';
+        }
+
+        function calculateFinalCost(min, max) {
+            const activeQuestion = document.querySelector('.question.active');
+            if (activeQuestion) activeQuestion.classList.remove('active');
+
+            document.getElementById('result').classList.add('active');
+            document.getElementById('estimated-cost').textContent = `$${min} - $${max}`;
+            backButton.style.display = 'none';
+        }
+        function startOver() {
+            currentStep = 1;
+            stepHistory = [];
+            updateProgress();
+            document.querySelectorAll('.question, .result').forEach(div => div.classList.remove('active'));
+            document.getElementById('question1').classList.add('active');
+            backButton.style.display = 'none';
+        }
+    </script>
 
 </body>
+
 </html>
